@@ -8,7 +8,7 @@ const IconMap = {
   Droplet: LucideIcons.Droplet,
 };
 
-const ProductItem = ({ name, benefits, iconKey, image, images, price }) => {
+const ProductItem = ({ name, benefits, iconKey, image, images }) => {
   const Icon = IconMap[iconKey];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -31,7 +31,7 @@ const ProductItem = ({ name, benefits, iconKey, image, images, price }) => {
 
   return (
     <div className="bg-white rounded-xl shadow-lg border-l-4 border-green-500 flex flex-col overflow-hidden h-full transition-all duration-300 hover:shadow-2xl">
-      
+
       {allImages.length > 0 && (
         <div className="h-64 w-full overflow-hidden relative group bg-white p-4 flex items-center justify-center border-b border-gray-100">
           <img
@@ -67,11 +67,10 @@ const ProductItem = ({ name, benefits, iconKey, image, images, price }) => {
                 {allImages.map((_, idx) => (
                   <div
                     key={idx}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      idx === currentImageIndex
+                    className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex
                         ? 'bg-green-500 w-4'
                         : 'bg-gray-300'
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -90,11 +89,7 @@ const ProductItem = ({ name, benefits, iconKey, image, images, price }) => {
           </h4>
         </div>
 
-        {price && (
-          <p className="text-2xl font-bold text-green-600 mb-3">
-            ₹{price}
-          </p>
-        )}
+
 
         <ul className="space-y-2 text-gray-600 mb-6 flex-grow">
           {benefits.map((benefit, index) => (
@@ -106,7 +101,7 @@ const ProductItem = ({ name, benefits, iconKey, image, images, price }) => {
         </ul>
 
         <div className="mt-auto">
-          <WhatsAppBuyButton productName={name} price={price} />
+          <WhatsAppBuyButton productName={name} />
         </div>
       </div>
     </div>

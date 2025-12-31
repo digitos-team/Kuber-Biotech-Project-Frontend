@@ -64,12 +64,12 @@ const Contact = () => {
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 py-16 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 py-12 md:py-16 overflow-hidden">
         <div className="container mx-auto px-4 relative z-10 text-center text-white">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4">
             {contact.title}
           </h1>
-          <p className="text-lg md:text-xl">
+          <p className="text-base md:text-xl">
             {lang === "mr"
               ? "आम्ही तुमची मदत करण्यासाठी येथे आहोत. आमच्याशी संपर्क साधा!"
               : "We're here to help you. Get in touch with us!"}
@@ -80,7 +80,7 @@ const Contact = () => {
       {/* Contact Info Cards */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {/* Address */}
             <div className="bg-white p-6 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
               <MapPin className="w-7 h-7 text-green-600 mx-auto mb-3" />
@@ -105,7 +105,7 @@ const Contact = () => {
             </div>
 
             {/* Email */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white p-6 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow duration-300 sm:col-span-2 lg:col-span-1">
               <Mail className="w-7 h-7 text-purple-600 mx-auto mb-3" />
               <h3 className="font-bold mb-2">
                 {lang === "mr" ? "ईमेल" : "Email"}
@@ -122,27 +122,27 @@ const Contact = () => {
       </section>
 
       {/* Contact Form Section */}
-      <section className="py-16 bg-gradient-to-b from-white to-gray-50">
+      <section className="py-12 md:py-16 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-8">
               <h3 className="text-3xl md:text-4xl font-bold mb-3 text-gray-800">
                 {lang === "mr" ? "संपर्कात रहा" : "Get In Touch"}
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm md:text-base">
                 {lang === "mr"
                   ? "तुमचा संदेश आम्हाला पाठवा आणि आम्ही लवकरच तुमच्याशी संपर्क साधू"
                   : "Send us a message and we'll get back to you as soon as possible"}
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-xl p-8">
+            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
               {/* Status Messages */}
               {submitStatus.message && (
                 <div
                   className={`mb-6 p-4 rounded-lg flex items-start gap-3 ${submitStatus.type === "success"
-                      ? "bg-green-50 text-green-800 border border-green-200"
-                      : "bg-red-50 text-red-800 border border-red-200"
+                    ? "bg-green-50 text-green-800 border border-green-200"
+                    : "bg-red-50 text-red-800 border border-red-200"
                     }`}
                 >
                   {submitStatus.type === "success" ? (

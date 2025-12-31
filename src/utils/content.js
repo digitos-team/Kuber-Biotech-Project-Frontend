@@ -134,7 +134,7 @@ export const getContent = (lang) => ({
       ? "ब्लॉक क्र. 105, वास्तुशिल्प अपार्टमेंट, देवलाई रोड, बीड बायपास, छत्रपती संभाजीनगर, महाराष्ट्र – 431010, भारत"
       : "Block No. 105, Vastushilpa Apartment, Devlai Road, Beed Bypass, Chhatrapati Sambhajinagar, Maharashtra – 431010, India",
     phone: "+91 9850244123",
-    email: "info@kuberbiotech.com", // Assuming generic email or placeholder if not provided
+    email: "sales@kuberbiotech.com", // Assuming generic email or placeholder if not provided
     reportSection: lang === 'mr'
       ? "ग्राहक उत्पादन समर्थन किंवा अभिप्रायासाठी येथे त्यांची रिपोर्ट आयडी तयार करू शकतात किंवा सबमिट करू शकतात."
       : "Customers can generate or submit their Report ID here for product support or feedback.",

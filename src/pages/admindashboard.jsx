@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Plus, Upload, X, Trash2, Edit, Mail, Package } from 'lucide-react';
+import { LogOut, Plus, Upload, X, Trash2, Edit, Mail, Package, FileText, Download } from 'lucide-react';
 import { addProduct, getAllProducts, deleteProduct, updateProduct } from '../api/productApi';
 import { getAllContacts, deleteContact } from '../api/contactApi';
+import { uploadBrochure, getAllBrochures, deleteBrochure, downloadBrochure } from '../api/brochureApi';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('products');
     const [isAddingProduct, setIsAddingProduct] = useState(false);
+    const [isUploadingBrochure, setIsUploadingBrochure] = useState(false);
     const [products, setProducts] = useState([]);
+    const [brochures, setBrochures] = useState([]);
     const [contacts, setContacts] = useState([]);
+    const [brochureFile, setBrochureFile] = useState(null);
+    const [brochureTitle, setBrochureTitle] = useState('');
     const [productData, setProductData] = useState({
         name: '',
         description: '',
-        price: '',
         category: 'Granule Products',
         images: []
     });
@@ -36,6 +40,7 @@ const AdminDashboard = () => {
     useEffect(() => {
         fetchProducts();
         fetchContacts();
+        fetchBrochures();
     }, []);
 
     const fetchProducts = async () => {
@@ -84,10 +89,33 @@ const AdminDashboard = () => {
             const validContacts = Array.isArray(contactsList)
                 ? contactsList.filter(item => item && typeof item === 'object')
                 : [];
-
             setContacts(validContacts);
         } catch (error) {
             console.error("Error fetching contacts:", error);
+        }
+    };
+
+    const fetchBrochures = async () => {
+        try {
+            const response = await getAllBrochures();
+            console.log("Brochures API response:", response);
+
+            let brochuresList = [];
+            const responseData = response.data?.data || response.data;
+
+            if (Array.isArray(responseData)) {
+                brochuresList = responseData;
+            } else if (responseData?.brochures) {
+                brochuresList = responseData.brochures;
+            }
+
+            const validBrochures = Array.isArray(brochuresList)
+                ? brochuresList.filter(item => item && typeof item === 'object')
+                : [];
+
+            setBrochures(validBrochures);
+        } catch (error) {
+            console.error("Error fetching brochures:", error);
         }
     };
 
@@ -130,7 +158,6 @@ const AdminDashboard = () => {
                 const updateData = {
                     newname: productData.name,
                     newdescription: productData.description,
-                    newprice: productData.price,
                     newcategory: productData.category
                 };
                 await updateProduct(editingProduct._id, updateData);
@@ -140,7 +167,6 @@ const AdminDashboard = () => {
                 const formData = new FormData();
                 formData.append('name', productData.name);
                 formData.append('description', productData.description);
-                formData.append('price', productData.price);
                 formData.append('category', productData.category);
 
                 if (productData.images && productData.images.length > 0) {
@@ -152,7 +178,7 @@ const AdminDashboard = () => {
                 await addProduct(formData);
                 setMessage({ type: 'success', text: 'Product added successfully!' });
             }
-            setProductData({ name: '', description: '', price: '', category: 'Granule Products', images: null });
+            setProductData({ name: '', description: '', category: 'Granule Products', images: null });
             setImagePreview(null);
             setEditingProduct(null);
             setIsAddingProduct(false);
@@ -170,7 +196,6 @@ const AdminDashboard = () => {
         setProductData({
             name: getStringValue(product.name),
             description: getStringValue(product.description),
-            price: getStringValue(product.price),
             category: getStringValue(product.category) || 'Granule Products',
             images: []
         });
@@ -208,6 +233,69 @@ const AdminDashboard = () => {
             } catch (error) {
                 console.error("Error deleting contact:", error);
                 setMessage({ type: 'error', text: 'Failed to delete contact submission.' });
+            }
+        }
+    };
+
+    const handleBrochureFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate PDF file
+            if (file.type !== 'application/pdf') {
+                setMessage({ type: 'error', text: 'Please select a PDF file only.' });
+                e.target.value = '';
+                return;
+            }
+            // Check file size (max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                setMessage({ type: 'error', text: 'File size must be less than 10MB.' });
+                e.target.value = '';
+                return;
+            }
+            setBrochureFile(file);
+        }
+    };
+
+    const handleBrochureUpload = async (e) => {
+        e.preventDefault();
+        if (!brochureFile) {
+            setMessage({ type: 'error', text: 'Please select a PDF file.' });
+            return;
+        }
+
+        setLoading(true);
+        setMessage({ type: '', text: '' });
+
+        try {
+            const formData = new FormData();
+            formData.append('file', brochureFile);
+            if (brochureTitle) {
+                formData.append('title', brochureTitle);
+            }
+
+            await uploadBrochure(formData);
+            setMessage({ type: 'success', text: 'Brochure uploaded successfully!' });
+            setBrochureFile(null);
+            setBrochureTitle('');
+            setIsUploadingBrochure(false);
+            fetchBrochures();
+        } catch (error) {
+            console.error("Error uploading brochure:", error);
+            setMessage({ type: 'error', text: 'Failed to upload brochure. Please try again.' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteBrochure = async (brochureId) => {
+        if (window.confirm("Are you sure you want to delete this brochure?")) {
+            try {
+                await deleteBrochure(brochureId);
+                setMessage({ type: 'success', text: 'Brochure deleted successfully!' });
+                fetchBrochures();
+            } catch (error) {
+                console.error("Error deleting brochure:", error);
+                setMessage({ type: 'error', text: 'Failed to delete brochure.' });
             }
         }
     };
@@ -268,6 +356,16 @@ const AdminDashboard = () => {
                             <Mail className="h-5 w-5 mr-2" />
                             Contact Submissions
                         </button>
+                        <button
+                            onClick={() => setActiveTab('brochures')}
+                            className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === 'brochures'
+                                ? 'border-green-500 text-green-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                }`}
+                        >
+                            <FileText className="h-5 w-5 mr-2" />
+                            Brochures
+                        </button>
                     </div>
                 </div>
             </div>
@@ -320,7 +418,6 @@ const AdminDashboard = () => {
                                                                 </div>
                                                                 <div className="ml-4">
                                                                     <p className="text-sm font-medium text-green-600">{getStringValue(product.name)}</p>
-                                                                    <p className="text-sm text-gray-500">₹{getStringValue(product.price)}</p>
                                                                     <p className="text-xs text-gray-400">{getStringValue(product.category)}</p>
                                                                 </div>
                                                             </div>
@@ -353,7 +450,7 @@ const AdminDashboard = () => {
                                             onClick={() => {
                                                 setIsAddingProduct(false);
                                                 setEditingProduct(null);
-                                                setProductData({ name: '', description: '', price: '', category: 'Granule Products', images: null });
+                                                setProductData({ name: '', description: '', category: 'Granule Products', images: null });
                                                 setImagePreview(null);
                                             }}
                                             className="text-gray-400 hover:text-gray-500"
@@ -393,27 +490,7 @@ const AdminDashboard = () => {
                                             />
                                         </div>
 
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Price
-                                            </label>
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                    <span className="text-gray-500 sm:text-sm">₹</span>
-                                                </div>
-                                                <input
-                                                    type="number"
-                                                    name="price"
-                                                    value={productData.price}
-                                                    onChange={handleInputChange}
-                                                    required
-                                                    min="0"
-                                                    step="0.01"
-                                                    className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500"
-                                                    placeholder="0.00"
-                                                />
-                                            </div>
-                                        </div>
+
 
                                         <div>
                                             <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
@@ -499,7 +576,7 @@ const AdminDashboard = () => {
                                                 onClick={() => {
                                                     setIsAddingProduct(false);
                                                     setEditingProduct(null);
-                                                    setProductData({ name: '', description: '', price: '', category: 'Granule Products', images: null });
+                                                    setProductData({ name: '', description: '', category: 'Granule Products', images: null });
                                                     setImagePreview(null);
                                                 }}
                                                 className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
@@ -573,6 +650,183 @@ const AdminDashboard = () => {
                                 </ul>
                             </div>
                         </div>
+                    )}
+
+                    {/* Brochures Tab */}
+                    {activeTab === 'brochures' && (
+                        <>
+                            {!isUploadingBrochure ? (
+                                <div>
+                                    <div className="flex justify-end mb-6">
+                                        <button
+                                            onClick={() => setIsUploadingBrochure(true)}
+                                            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                                        >
+                                            <Plus className="h-5 w-5 mr-2" />
+                                            Upload New Brochure
+                                        </button>
+                                    </div>
+
+                                    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+                                        <div className="px-4 py-5 sm:px-6">
+                                            <h3 className="text-lg leading-6 font-medium text-gray-900">Brochures</h3>
+                                            <p className="mt-1 text-sm text-gray-500">Manage PDF brochures for download.</p>
+                                        </div>
+                                        <div className="border-t border-gray-200">
+                                            <ul className="divide-y divide-gray-200">
+                                                {brochures.length === 0 ? (
+                                                    <li className="px-4 py-4 sm:px-6 text-center text-gray-500">No brochures found.</li>
+                                                ) : (
+                                                    brochures.map((brochure) => (
+                                                        <li key={brochure._id} className="px-4 py-4 sm:px-6 flex items-center justify-between hover:bg-gray-50">
+                                                            <div className="flex items-center">
+                                                                <div className="h-12 w-12 bg-red-100 rounded-md flex items-center justify-center">
+                                                                    <FileText className="h-6 w-6 text-red-600" />
+                                                                </div>
+                                                                <div className="ml-4">
+                                                                    <p className="text-sm font-medium text-green-600">
+                                                                        {getStringValue(brochure.title) || getStringValue(brochure.filename) || 'Untitled Brochure'}
+                                                                    </p>
+                                                                    <p className="text-xs text-gray-500">
+                                                                        {brochure.createdAt ? formatDate(brochure.createdAt) : 'N/A'}
+                                                                    </p>
+                                                                    {brochure.filesize && (
+                                                                        <p className="text-xs text-gray-400">
+                                                                            {(brochure.filesize / (1024 * 1024)).toFixed(2)} MB
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex space-x-2">
+                                                                <button
+                                                                    onClick={() => handleDownloadBrochure(brochure._id, brochure.filename)}
+                                                                    className="text-blue-600 hover:text-blue-900"
+                                                                    title="Download brochure"
+                                                                >
+                                                                    <Download className="h-5 w-5" />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleDeleteBrochure(brochure._id)}
+                                                                    className="text-red-600 hover:text-red-900"
+                                                                    title="Delete brochure"
+                                                                >
+                                                                    <Trash2 className="h-5 w-5" />
+                                                                </button>
+                                                            </div>
+                                                        </li>
+                                                    ))
+                                                )}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-2xl font-bold text-gray-900">Upload Brochure</h2>
+                                        <button
+                                            onClick={() => {
+                                                setIsUploadingBrochure(false);
+                                                setBrochureFile(null);
+                                                setBrochureTitle('');
+                                            }}
+                                            className="text-gray-400 hover:text-gray-500"
+                                        >
+                                            <X className="h-6 w-6" />
+                                        </button>
+                                    </div>
+
+                                    <form onSubmit={handleBrochureUpload} className="space-y-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Brochure Title (Optional)
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={brochureTitle}
+                                                onChange={(e) => setBrochureTitle(e.target.value)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500"
+                                                placeholder="Enter brochure title"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                PDF File *
+                                            </label>
+                                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-green-500 transition-colors">
+                                                <div className="space-y-1 text-center">
+                                                    {brochureFile ? (
+                                                        <div className="flex items-center justify-center">
+                                                            <FileText className="h-12 w-12 text-red-600 mr-2" />
+                                                            <div className="text-left">
+                                                                <p className="text-sm font-medium text-gray-900">{brochureFile.name}</p>
+                                                                <p className="text-xs text-gray-500">
+                                                                    {(brochureFile.size / (1024 * 1024)).toFixed(2)} MB
+                                                                </p>
+                                                            </div>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setBrochureFile(null)}
+                                                                className="ml-4 text-red-600 hover:text-red-900"
+                                                            >
+                                                                <X className="h-5 w-5" />
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            <FileText className="mx-auto h-12 w-12 text-gray-400" />
+                                                            <div className="flex text-sm text-gray-600 justify-center">
+                                                                <label
+                                                                    htmlFor="brochure-upload"
+                                                                    className="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500"
+                                                                >
+                                                                    <span>Upload PDF file</span>
+                                                                    <input
+                                                                        id="brochure-upload"
+                                                                        name="brochure-upload"
+                                                                        type="file"
+                                                                        className="sr-only"
+                                                                        accept=".pdf,application/pdf"
+                                                                        onChange={handleBrochureFileChange}
+                                                                        required
+                                                                    />
+                                                                </label>
+                                                                <p className="pl-1">or drag and drop</p>
+                                                            </div>
+                                                            <p className="text-xs text-gray-500">
+                                                                PDF files only, up to 10MB
+                                                            </p>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex justify-end space-x-3">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setIsUploadingBrochure(false);
+                                                    setBrochureFile(null);
+                                                    setBrochureTitle('');
+                                                }}
+                                                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                disabled={loading || !brochureFile}
+                                                className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${loading || !brochureFile ? 'opacity-75 cursor-not-allowed' : ''}`}
+                                            >
+                                                {loading ? 'Uploading...' : 'Upload Brochure'}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </main>

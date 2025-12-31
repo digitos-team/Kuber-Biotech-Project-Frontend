@@ -23,11 +23,11 @@ const Products = () => {
         const responseData = response.data?.data || response.data;
 
         if (Array.isArray(responseData)) {
-            const innerArray = responseData.find(item => Array.isArray(item));
-            if (innerArray) productsList = innerArray;
-            else productsList = responseData;
+          const innerArray = responseData.find(item => Array.isArray(item));
+          if (innerArray) productsList = innerArray;
+          else productsList = responseData;
         } else if (responseData?.products) {
-            productsList = responseData.products;
+          productsList = responseData.products;
         }
 
         const validProducts = Array.isArray(productsList)
@@ -65,7 +65,7 @@ const Products = () => {
   // Filter based on "en" category (database always stores { en: "Granule Products", mr: "..." })
   // We use .en or check if category is object
   const getCategoryEn = (p) => p.category?.en || p.category || "";
-  
+
   const granuleProducts = products.filter(p => getCategoryEn(p) === 'Granule Products');
   const liquidProducts = products.filter(p => getCategoryEn(p) === 'Liquid Products');
 
@@ -73,16 +73,16 @@ const Products = () => {
   const displayedProducts = activeCategory === 'Granule Products' ? granuleProducts : liquidProducts;
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-12 md:py-16 bg-gray-50">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-extrabold text-gray-900 text-center mb-8">{content.products.title}</h2>
+        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 text-center mb-8">{content.products.title}</h2>
 
         {/* Tab Navigation */}
         <div className="flex justify-center mb-12">
-          <div className="bg-white p-1 rounded-lg shadow-md inline-flex">
+          <div className="bg-white p-1 rounded-lg shadow-md inline-flex w-full max-w-md">
             <button
               onClick={() => setActiveCategory('Granule Products')}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeCategory === 'Granule Products'
+              className={`flex-1 px-4 py-2.5 rounded-md text-sm font-medium transition-all duration-200 ${activeCategory === 'Granule Products'
                 ? 'bg-green-600 text-white shadow-sm'
                 : 'text-gray-600 hover:text-green-600'
                 }`}
@@ -91,7 +91,7 @@ const Products = () => {
             </button>
             <button
               onClick={() => setActiveCategory('Liquid Products')}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeCategory === 'Liquid Products'
+              className={`flex-1 px-4 py-2.5 rounded-md text-sm font-medium transition-all duration-200 ${activeCategory === 'Liquid Products'
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'text-gray-600 hover:text-blue-600'
                 }`}
@@ -106,19 +106,19 @@ const Products = () => {
         ) : (
           <div>
             {displayedProducts.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fadeIn">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 animate-fadeIn">
                 {displayedProducts.map((item, index) => {
                   // Select language content safely
                   const displayName = item.name?.[lang] || item.name?.en || item.name || "Product";
                   const displayDesc = item.description?.[lang] || item.description?.en || item.description || "";
-                  
+
                   return (
                     <ProductItem
                       key={item._id || index}
                       name={displayName}
                       benefits={displayDesc ? [displayDesc] : []}
                       iconKey={activeCategory === 'Granule Products' ? "Leaf" : "Droplet"}
-                      price={item.price}
+
                       images={item.images}
                       image={item.image}
                     />
