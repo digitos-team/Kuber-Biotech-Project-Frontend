@@ -73,7 +73,7 @@ const Header = () => {
           <img
             src="/Kuber Logo(1)(1).png"
             alt={COMPANY_NAME[lang]}
-            className="h-14 w-auto object-contain"
+            className="h-10 sm:h-14 w-auto object-contain"
           />
         </div>
 
@@ -91,10 +91,10 @@ const Header = () => {
               <div className="relative">
                 <button
                   onClick={() => setShowBrochureDropdown(!showBrochureDropdown)}
-                  className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 py-2 rounded-lg transition-colors duration-300 font-medium text-sm sm:text-base"
+                  className="flex items-center space-x-1 sm:space-x-2 bg-green-600 hover:bg-green-700 text-white px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-colors duration-300 font-medium text-sm sm:text-base"
                 >
                   <Download className="w-4 h-4" />
-                  <span className="hidden sm:inline">{lang === 'mr' ? 'माहितीपत्र' : 'Brochures'}</span>
+                  <span className="hidden md:inline">{lang === 'mr' ? 'माहितीपत्र' : 'Brochures'}</span>
                   <ChevronDown className="w-4 h-4" />
                 </button>
 

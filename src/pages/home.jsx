@@ -21,7 +21,7 @@ const Home = () => {
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
-      <div className="relative h-[400px] md:h-[600px] flex items-center justify-center text-white overflow-hidden">
+      <div className="relative min-h-[400px] md:h-[600px] flex items-center justify-center text-white overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src="/Hero Section.jpg"
@@ -33,7 +33,7 @@ const Home = () => {
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <p className="text-green-400 font-bold tracking-widest uppercase mb-4 animate-fadeIn">{home.tagline}</p>
-          <h1 className="text-4xl md:text-7xl font-extrabold mb-6 leading-tight animate-slideUp">
+          <h1 className="text-3xl md:text-7xl font-extrabold mb-6 leading-tight animate-slideUp">
             {home.welcome}
           </h1>
           <p className="text-lg md:text-2xl text-gray-200 mb-10 max-w-2xl mx-auto animate-slideUp delay-100">
@@ -48,7 +48,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12 md:py-16">
+      <div className="container mx-auto px-4 py-8 md:py-16">
         {/* What We Offer */}
         <div className="mb-20">
           <div className="text-center mb-12">
@@ -57,7 +57,7 @@ const Home = () => {
               <span className="absolute bottom-0 left-0 w-full h-1 bg-green-500 rounded-full"></span>
             </h3>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {home.offerings.map((item, index) => {
               const ItemIcon = IconMap[item.icon];
               return (

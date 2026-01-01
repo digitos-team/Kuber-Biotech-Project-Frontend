@@ -68,8 +68,8 @@ const ProductItem = ({ name, benefits, iconKey, image, images }) => {
                   <div
                     key={idx}
                     className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex
-                        ? 'bg-green-500 w-4'
-                        : 'bg-gray-300'
+                      ? 'bg-green-500 w-4'
+                      : 'bg-gray-300'
                       }`}
                   />
                 ))}
@@ -79,7 +79,7 @@ const ProductItem = ({ name, benefits, iconKey, image, images }) => {
         </div>
       )}
 
-      <div className="p-5 flex flex-col flex-grow">
+      <div className="p-4 md:p-5 flex flex-col flex-grow">
         <div className="flex items-center mb-2">
           {Icon && allImages.length === 0 && (
             <Icon className="w-6 h-6 text-green-600 mr-3" />

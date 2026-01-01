@@ -82,7 +82,7 @@ const Contact = () => {
         <div className="container mx-auto px-4">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {/* Address */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
               <MapPin className="w-7 h-7 text-green-600 mx-auto mb-3" />
               <h3 className="font-bold mb-2">
                 {lang === "mr" ? "पत्ता" : "Address"}
@@ -91,7 +91,7 @@ const Contact = () => {
             </div>
 
             {/* Phone */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
               <Phone className="w-7 h-7 text-blue-600 mx-auto mb-3" />
               <h3 className="font-bold mb-2">
                 {lang === "mr" ? "फोन" : "Phone"}
@@ -105,7 +105,7 @@ const Contact = () => {
             </div>
 
             {/* Email */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow duration-300 sm:col-span-2 lg:col-span-1">
+            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow duration-300 sm:col-span-2 lg:col-span-1">
               <Mail className="w-7 h-7 text-purple-600 mx-auto mb-3" />
               <h3 className="font-bold mb-2">
                 {lang === "mr" ? "ईमेल" : "Email"}

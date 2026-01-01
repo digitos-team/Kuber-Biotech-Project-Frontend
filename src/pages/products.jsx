@@ -79,7 +79,7 @@ const Products = () => {
 
         {/* Tab Navigation */}
         <div className="flex justify-center mb-12">
-          <div className="bg-white p-1 rounded-lg shadow-md inline-flex w-full max-w-md">
+          <div className="bg-white p-1 rounded-lg shadow-md flex flex-col sm:flex-row w-full max-w-md">
             <button
               onClick={() => setActiveCategory('Granule Products')}
               className={`flex-1 px-4 py-2.5 rounded-md text-sm font-medium transition-all duration-200 ${activeCategory === 'Granule Products'
@@ -106,7 +106,7 @@ const Products = () => {
         ) : (
           <div>
             {displayedProducts.length > 0 ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 animate-fadeIn">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 animate-fadeIn">
                 {displayedProducts.map((item, index) => {
                   // Select language content safely
                   const displayName = item.name?.[lang] || item.name?.en || item.name || "Product";
