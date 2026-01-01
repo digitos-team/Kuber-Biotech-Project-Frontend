@@ -86,9 +86,9 @@ const Header = () => {
 
         <div className="flex items-center space-x-2">
           <div className="flex items-center space-x-4">
-            {/* Brochure Download Dropdown */}
+            {/* Brochure Download Dropdown - Hidden on Mobile */}
             {brochures.length > 0 && (
-              <div className="relative">
+              <div className="relative hidden lg:block">
                 <button
                   onClick={() => setShowBrochureDropdown(!showBrochureDropdown)}
                   className="flex items-center space-x-1 sm:space-x-2 bg-green-600 hover:bg-green-700 text-white px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-colors duration-300 font-medium text-sm sm:text-base"
@@ -162,6 +162,32 @@ const Header = () => {
                 <NavItem item={item} />
               </div>
             ))}
+
+            {/* Mobile Brochure Section */}
+            {brochures.length > 0 && (
+              <div className="border-t border-gray-100 pt-2 mt-2">
+                <div className="px-4 py-2 text-sm font-semibold text-gray-500 uppercase">
+                  {lang === 'mr' ? 'माहितीपत्र' : 'Brochures'}
+                </div>
+                {brochures.map((brochure) => (
+                  <button
+                    key={brochure._id}
+                    onClick={() => {
+                      handleDownloadBrochure(brochure._id, brochure.filename);
+                      setIsMenuOpen(false);
+                    }}
+                    disabled={loading}
+                    className="w-full px-4 py-3 hover:bg-gray-50 transition-colors duration-200 flex items-center space-x-3 text-left"
+                  >
+                    <FileText className="w-5 h-5 text-red-600 flex-shrink-0" />
+                    <span className="text-gray-800 font-medium flex-1 line-clamp-1">
+                      {brochure.title || brochure.filename || 'Brochure'}
+                    </span>
+                    <Download className="w-4 h-4 text-green-600" />
+                  </button>
+                ))}
+              </div>
+            )}
           </nav>
         )}
       </div>
