@@ -1,7 +1,9 @@
 import axiosInstance from "../utils/axiosInstance";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const addProduct = (formData) => {
-    return axiosInstance.post("products/add-product", formData, {
+    return axiosInstance.post(`${API_URL}/api/products/add-product`, formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
@@ -9,23 +11,23 @@ export const addProduct = (formData) => {
 };
 
 export const getAllProducts = (
-  page = 1,
-  limit = 10,
-  lang = "en",
-  token = null
+    page = 1,
+    limit = 10,
+    lang = "en",
+    token = null
 ) => {
-  let url = `products/get?page=${page}&limit=${limit}&lang=${lang}`;
+    let url = `${API_URL}/api/products/get?page=${page}&limit=${limit}&lang=${lang}`;
 
-  if (token) {
-    url += `&t=${token}`;
-  }
+    if (token) {
+        url += `&t=${token}`;
+    }
 
-  return axiosInstance.get(url);
+    return axiosInstance.get(url);
 };
 
 
 export const deleteProduct = (productId) => {
-    return axiosInstance.delete(`products/delete-product/${productId}`);
+    return axiosInstance.delete(`${API_URL}/api/products/delete-product/${productId}`);
 };
 
 export const updateProduct = (productId, data) => {
@@ -33,7 +35,7 @@ export const updateProduct = (productId, data) => {
     // If data is FormData, send as multipart (though edit doesn't support this currently)
     const isFormData = data instanceof FormData;
 
-    return axiosInstance.patch(`products/edit-product/${productId}`, data, {
+    return axiosInstance.patch(`${API_URL}/api/products/edit-product/${productId}`, data, {
         headers: isFormData ? {
             "Content-Type": "multipart/form-data",
         } : {
