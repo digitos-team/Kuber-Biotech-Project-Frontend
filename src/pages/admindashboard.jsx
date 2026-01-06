@@ -38,15 +38,18 @@ const AdminDashboard = () => {
     };
 
     useEffect(() => {
-        fetchProducts();
-        fetchContacts();
-        fetchBrochures();
+        Promise.all([
+            fetchProducts(),
+            fetchContacts(),
+            fetchBrochures()
+        ]).catch(error => {
+            console.error("Error loading dashboard data:", error);
+        });
     }, []);
 
     const fetchProducts = async () => {
         try {
             const response = await getAllProducts();
-            console.log("Products API response:", response);
 
             let productsList = [];
             const responseData = response.data?.data || response.data;
@@ -75,7 +78,7 @@ const AdminDashboard = () => {
     const fetchContacts = async () => {
         try {
             const response = await getAllContacts();
-            console.log("Contacts API response:", response);
+
 
             let contactsList = [];
             const responseData = response.data?.data || response.data;
@@ -98,7 +101,7 @@ const AdminDashboard = () => {
     const fetchBrochures = async () => {
         try {
             const response = await getAllBrochures();
-            console.log("Brochures API response:", response);
+
 
             let brochuresList = [];
             const responseData = response.data?.data || response.data;
@@ -629,7 +632,7 @@ const AdminDashboard = () => {
                                                             </span>
                                                         </div>
                                                         <p className="text-sm text-gray-600 mb-2">
-                                                            <span className="font-medium">Email:</span> {getStringValue(contact.email)}
+                                                            <span className="font-medium">Phone:</span> {getStringValue(contact.phone)}
                                                         </p>
                                                         <div className="bg-gray-50 p-3 rounded-md">
                                                             <p className="text-sm font-medium text-gray-700 mb-1">Message:</p>

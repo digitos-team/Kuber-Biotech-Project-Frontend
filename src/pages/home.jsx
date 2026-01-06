@@ -1,16 +1,16 @@
 import React from 'react';
-import * as LucideIcons from 'lucide-react';
+import { Leaf, Droplet, Scale, Zap, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { getContent } from '../utils/content';
 import { Link } from 'react-router-dom';
 
 // Map string icon names from content.js to Lucide components
 const IconMap = {
-  Leaf: LucideIcons.Leaf,
-  Droplet: LucideIcons.Droplet,
-  Scale: LucideIcons.Scale,
-  Zap: LucideIcons.Zap,
-  CheckCircle: LucideIcons.CheckCircle
+  Leaf,
+  Droplet,
+  Scale,
+  Zap,
+  CheckCircle
 };
 
 const Home = () => {

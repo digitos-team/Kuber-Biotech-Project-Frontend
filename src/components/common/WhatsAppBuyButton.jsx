@@ -14,15 +14,14 @@ const WhatsAppBuyButton = ({
     const cleanPhone = phoneNumber.replace(/\D/g, '');
 
     // 2. Prepare the message ✅ FIXED (added backticks)
-    console.log('Product Name:', productName); // Debug log
+   
     const defaultMessage = `Hello, I am interested in buying ${productName}. Please provide more details.`;
     const finalMessage = message || defaultMessage;
     const encodedMessage = encodeURIComponent(finalMessage);
-    console.log('Final Message:', finalMessage); // Debug log
 
     // 3. WhatsApp link using api.whatsapp.com for better compatibility
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodedMessage}`;
-    console.log('WhatsApp URL:', whatsappUrl); // Debug log
+   
 
     // 4. Robust Copy to clipboard
     const copyToClipboard = async (text) => {

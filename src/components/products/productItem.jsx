@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
 import WhatsAppBuyButton from '../common/WhatsAppBuyButton';
+import { Leaf, Droplet } from 'lucide-react';
 
 const IconMap = {
-  Leaf: LucideIcons.Leaf,
-  Droplet: LucideIcons.Droplet,
+  Leaf,
+  Droplet,
 };
 
 const ProductItem = ({ name, benefits, iconKey, image, images }) => {

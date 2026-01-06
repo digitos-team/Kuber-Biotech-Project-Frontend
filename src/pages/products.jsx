@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { getContent } from '../utils/content';
 import ProductItem from '../components/products/productItem';
@@ -15,9 +15,7 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // Fetch ALL data (both languages) with cache busting
-        const response = await getAllProducts(1, 100, null, Date.now());
-        console.log("Products API response:", response);
+        const response = await getAllProducts(1, 100, lang);
 
         let productsList = [];
         const responseData = response.data?.data || response.data;
@@ -44,8 +42,25 @@ const Products = () => {
     };
 
     fetchProducts();
-  }, []); // Run ONCE on mount (no language dependency needed)
+  }, [lang]);
 
+  // ✅ Filter helper function
+  const getCategoryEn = (p) => p.category?.en || p.category || "";
+
+  // ✅ Memoize filtered products (BEFORE early returns)
+  const granuleProducts = useMemo(
+    () => products.filter(p => getCategoryEn(p) === 'Granule Products'),
+    [products]
+  );
+
+  const liquidProducts = useMemo(
+    () => products.filter(p => getCategoryEn(p) === 'Liquid Products'),
+    [products]
+  );
+
+  const displayedProducts = activeCategory === 'Granule Products' ? granuleProducts : liquidProducts;
+
+  // ✅ Early returns AFTER all hooks
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -61,16 +76,6 @@ const Products = () => {
       </div>
     );
   }
-
-  // Filter based on "en" category (database always stores { en: "Granule Products", mr: "..." })
-  // We use .en or check if category is object
-  const getCategoryEn = (p) => p.category?.en || p.category || "";
-
-  const granuleProducts = products.filter(p => getCategoryEn(p) === 'Granule Products');
-  const liquidProducts = products.filter(p => getCategoryEn(p) === 'Liquid Products');
-
-  // Determine which products to show based on active tab
-  const displayedProducts = activeCategory === 'Granule Products' ? granuleProducts : liquidProducts;
 
   return (
     <section className="py-12 md:py-16 bg-gray-50">
@@ -108,7 +113,6 @@ const Products = () => {
             {displayedProducts.length > 0 ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 animate-fadeIn">
                 {displayedProducts.map((item, index) => {
-                  // Select language content safely
                   const displayName = item.name?.[lang] || item.name?.en || item.name || "Product";
                   const displayDesc = item.description?.[lang] || item.description?.en || item.description || "";
 
@@ -118,7 +122,6 @@ const Products = () => {
                       name={displayName}
                       benefits={displayDesc ? [displayDesc] : []}
                       iconKey={activeCategory === 'Granule Products' ? "Leaf" : "Droplet"}
-
                       images={item.images}
                       image={item.image}
                     />

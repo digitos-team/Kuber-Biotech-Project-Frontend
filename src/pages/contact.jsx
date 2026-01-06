@@ -11,7 +11,7 @@ const Contact = () => {
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
+    phone: "",
     message: ""
   });
 
@@ -45,7 +45,7 @@ const Contact = () => {
       // Reset form
       setFormData({
         name: "",
-        email: "",
+        phone: "",
         message: ""
       });
     } catch (error) {
@@ -175,23 +175,23 @@ const Contact = () => {
                   />
                 </div>
 
-                {/* Email Field */}
+                {/* Phone Field */}
                 <div>
                   <label
-                    htmlFor="email"
+                    htmlFor="phone"
                     className="block text-sm font-semibold text-gray-700 mb-2"
                   >
-                    {lang === "mr" ? "ईमेल" : "Email"} <span className="text-red-500">*</span>
+                    {lang === "mr" ? "फोन नंबर" : "Phone Number"} <span className="text-red-500">*</span>
                   </label>
                   <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
                     onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                    placeholder={lang === "mr" ? "तुमचा ईमेल" : "your.email@example.com"}
+                    placeholder={lang === "mr" ? "तुमचा फोन नंबर" : "+91 1234567890"}
                   />
                 </div>
 
