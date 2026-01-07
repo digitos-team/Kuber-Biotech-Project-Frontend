@@ -303,6 +303,32 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleDownloadBrochure = async (brochureId, filename) => {
+        setLoading(true);
+        try {
+            const response = await downloadBrochure(brochureId);
+
+            const url = window.URL.createObjectURL(
+                new Blob([response.data], { type: 'application/pdf' })
+            );
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename || 'brochure.pdf');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+
+            setMessage({ type: 'success', text: 'Brochure downloaded successfully!' });
+        } catch (error) {
+            console.error("Error downloading brochure:", error);
+            setMessage({ type: 'error', text: 'Failed to download brochure.' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-IN', {

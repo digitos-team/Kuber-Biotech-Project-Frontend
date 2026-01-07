@@ -18,23 +18,11 @@ const Login = () => {
         try {
             const response = await loginApi({ email, password });
 
-            console.log('=== LOGIN DEBUG ===');
-            console.log('Full response:', response);
-            console.log('Response data:', response.data);
-            console.log('Response data.data:', response.data?.data);
-
             // Store the access token in localStorage
             if (response.status === 200 || response.status === 201) {
                 const accessToken = response.data?.data?.accessToken;
-                console.log('Extracted accessToken:', accessToken);
-
                 if (accessToken) {
                     localStorage.setItem('accessToken', accessToken);
-                    console.log('Token stored in localStorage');
-                    console.log('Verification - Token from localStorage:', localStorage.getItem('accessToken'));
-                } else {
-                    console.warn('⚠️ WARNING: No accessToken found in response!');
-                    console.log('Expected path: response.data.data.accessToken');
                 }
                 navigate('/admindashboard');
             }
