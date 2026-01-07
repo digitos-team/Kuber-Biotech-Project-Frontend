@@ -4,6 +4,7 @@ import { LogOut, Plus, Upload, X, Trash2, Edit, Mail, Package, FileText, Downloa
 import { addProduct, getAllProducts, deleteProduct, updateProduct } from '../api/productApi';
 import { getAllContacts, deleteContact } from '../api/contactApi';
 import { uploadBrochure, getAllBrochures, deleteBrochure, downloadBrochure } from '../api/brochureApi';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -25,6 +26,7 @@ const AdminDashboard = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
+    const [deleteModal, setDeleteModal] = useState({ isOpen: false, type: '', id: '', name: '' });
 
     // Helper function to safely extract string values from multilingual objects
     const getStringValue = (value) => {
@@ -215,28 +217,24 @@ const AdminDashboard = () => {
     };
 
     const handleDeleteProduct = async (productId) => {
-        if (window.confirm("Are you sure you want to delete this product?")) {
-            try {
-                await deleteProduct(productId);
-                setMessage({ type: 'success', text: 'Product deleted successfully!' });
-                fetchProducts();
-            } catch (error) {
-                console.error("Error deleting product:", error);
-                setMessage({ type: 'error', text: 'Failed to delete product.' });
-            }
+        try {
+            await deleteProduct(productId);
+            setMessage({ type: 'success', text: 'Product deleted successfully!' });
+            fetchProducts();
+        } catch (error) {
+            console.error("Error deleting product:", error);
+            setMessage({ type: 'error', text: 'Failed to delete product.' });
         }
     };
 
     const handleDeleteContact = async (contactId) => {
-        if (window.confirm("Are you sure you want to delete this contact submission?")) {
-            try {
-                await deleteContact(contactId);
-                setMessage({ type: 'success', text: 'Contact submission deleted successfully!' });
-                fetchContacts();
-            } catch (error) {
-                console.error("Error deleting contact:", error);
-                setMessage({ type: 'error', text: 'Failed to delete contact submission.' });
-            }
+        try {
+            await deleteContact(contactId);
+            setMessage({ type: 'success', text: 'Contact submission deleted successfully!' });
+            fetchContacts();
+        } catch (error) {
+            console.error("Error deleting contact:", error);
+            setMessage({ type: 'error', text: 'Failed to delete contact submission.' });
         }
     };
 
@@ -291,15 +289,13 @@ const AdminDashboard = () => {
     };
 
     const handleDeleteBrochure = async (brochureId) => {
-        if (window.confirm("Are you sure you want to delete this brochure?")) {
-            try {
-                await deleteBrochure(brochureId);
-                setMessage({ type: 'success', text: 'Brochure deleted successfully!' });
-                fetchBrochures();
-            } catch (error) {
-                console.error("Error deleting brochure:", error);
-                setMessage({ type: 'error', text: 'Failed to delete brochure.' });
-            }
+        try {
+            await deleteBrochure(brochureId);
+            setMessage({ type: 'success', text: 'Brochure deleted successfully!' });
+            fetchBrochures();
+        } catch (error) {
+            console.error("Error deleting brochure:", error);
+            setMessage({ type: 'error', text: 'Failed to delete brochure.' });
         }
     };
 
@@ -458,7 +454,12 @@ const AdminDashboard = () => {
                                                                     <Edit className="h-5 w-5" />
                                                                 </button>
                                                                 <button
-                                                                    onClick={() => handleDeleteProduct(product._id)}
+                                                                    onClick={() => setDeleteModal({
+                                                                        isOpen: true,
+                                                                        type: 'product',
+                                                                        id: product._id,
+                                                                        name: getStringValue(product.name)
+                                                                    })}
                                                                     className="text-red-600 hover:text-red-900"
                                                                 >
                                                                     <Trash2 className="h-5 w-5" />
@@ -666,7 +667,12 @@ const AdminDashboard = () => {
                                                         </div>
                                                     </div>
                                                     <button
-                                                        onClick={() => handleDeleteContact(contact._id)}
+                                                        onClick={() => setDeleteModal({
+                                                            isOpen: true,
+                                                            type: 'contact',
+                                                            id: contact._id,
+                                                            name: getStringValue(contact.name)
+                                                        })}
                                                         className="ml-4 text-red-600 hover:text-red-900 flex-shrink-0"
                                                         title="Delete submission"
                                                     >
@@ -735,7 +741,12 @@ const AdminDashboard = () => {
                                                                     <Download className="h-5 w-5" />
                                                                 </button>
                                                                 <button
-                                                                    onClick={() => handleDeleteBrochure(brochure._id)}
+                                                                    onClick={() => setDeleteModal({
+                                                                        isOpen: true,
+                                                                        type: 'brochure',
+                                                                        id: brochure._id,
+                                                                        name: getStringValue(brochure.title) || getStringValue(brochure.filename) || 'Untitled Brochure'
+                                                                    })}
                                                                     className="text-red-600 hover:text-red-900"
                                                                     title="Delete brochure"
                                                                 >
@@ -859,6 +870,24 @@ const AdminDashboard = () => {
                     )}
                 </div>
             </main>
+
+            {/* Delete Confirmation Modal */}
+            <DeleteConfirmModal
+                isOpen={deleteModal.isOpen}
+                onClose={() => setDeleteModal({ isOpen: false, type: '', id: '', name: '' })}
+                onConfirm={() => {
+                    if (deleteModal.type === 'product') {
+                        handleDeleteProduct(deleteModal.id);
+                    } else if (deleteModal.type === 'contact') {
+                        handleDeleteContact(deleteModal.id);
+                    } else if (deleteModal.type === 'brochure') {
+                        handleDeleteBrochure(deleteModal.id);
+                    }
+                }}
+                title={`Delete ${deleteModal.type === 'product' ? 'Product' : deleteModal.type === 'contact' ? 'Contact' : 'Brochure'}`}
+                message={`Are you sure you want to delete this ${deleteModal.type}? This action cannot be undone.`}
+                itemName={deleteModal.name}
+            />
         </div>
     );
 };
