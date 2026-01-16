@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { COMPANY_NAME, FOOTER_YEAR, getContent } from '../../utils/content';
-import { MapPin, Phone, Globe, Clock, Calendar, XCircle } from 'lucide-react';
+import { MapPin, Phone, Globe, Clock, Calendar, XCircle, Instagram, Facebook, MessageCircle } from 'lucide-react';
 
 const Footer = () => {
   const { lang } = useLanguage();
@@ -75,6 +75,39 @@ const Footer = () => {
                 <span>{footer.workingHours.sunday}</span>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Social Media Links */}
+        <div className="border-t border-gray-800 pt-8 pb-6">
+          <div className="flex justify-center items-center gap-6">
+            <a
+              href="https://www.instagram.com/kuber.biotech?utm_source=qr&igsh=MWwxZXM0Y2tocWZpbA=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 p-3 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-6 h-6 text-white" />
+            </a>
+            <a
+              href="https://www.facebook.com/share/1DZTiBGbpV/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-600 p-3 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
+              aria-label="Facebook"
+            >
+              <Facebook className="w-6 h-6 text-white" />
+            </a>
+            <a
+              href="https://wa.me/919850244123"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-600 p-3 rounded-full hover:scale-110 transition-transform duration-300 shadow-lg"
+              aria-label="WhatsApp"
+            >
+              <MessageCircle className="w-6 h-6 text-white" />
+            </a>
           </div>
         </div>
 
